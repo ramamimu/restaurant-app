@@ -4,7 +4,7 @@ class Restaurant {
   final String description;
   final String pictureId;
   final String city;
-  final String rating;
+  final double rating;
   final Menus menus;
 
   Restaurant({
@@ -23,7 +23,7 @@ class Restaurant {
         description: json["description"],
         pictureId: json["pictureId"],
         city: json["city"],
-        rating: json["rating"],
+        rating: json["rating"].toDouble() as double,
         menus: Menus.fromJson(json["menus"]),
       );
 
