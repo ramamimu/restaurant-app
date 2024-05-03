@@ -49,7 +49,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       body: SafeArea(
         child: Container(
           margin:
-          const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 5),
+              const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 5),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -21,7 +21,14 @@ class RestaurantTile extends StatelessWidget {
       },
       child: Card(
         child: ListTile(
-          leading: Image.network(restaurant.pictureId),
+          leading: Image.network(
+            restaurant.pictureId,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const Text("loading...");
+            },
+          ),
           title: Text(restaurant.name),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
