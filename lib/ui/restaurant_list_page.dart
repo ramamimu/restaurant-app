@@ -14,7 +14,7 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  late List<Restaurant> restaurants;
+  List<Restaurant> restaurants = [];
 
   @override
   void initState() {
