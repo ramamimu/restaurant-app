@@ -15,6 +15,8 @@ class RestaurantPage extends StatefulWidget {
 
 class _RestaurantPageState extends State<RestaurantPage> {
   List<Restaurant> restaurants = [];
+  bool isRestaurantListLoading = true;
+  String loadingText = "loading...";
 
   @override
   void initState() {
@@ -23,18 +25,27 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
   void loadJsonData() async {
-    String stringJson = await DefaultAssetBundle.of(context)
-        .loadString('assets/local_restaurant.json');
-    Map<String, dynamic> parsedJson = jsonDecode(stringJson);
+    try {
+      String stringJson = await DefaultAssetBundle.of(context)
+          .loadString('assets/local_restaurant.json');
+      Map<String, dynamic> parsedJson = jsonDecode(stringJson);
 
-    List<dynamic> listRestaurant = parsedJson['restaurants'];
-    setState(() {
-      restaurants = listRestaurant.map((e) {
-        return Restaurant.fromJson(e);
-      }).toList();
-    });
-    if (kDebugMode) {
-      print(parsedJson['restaurants'].length);
+      List<dynamic> listRestaurant = parsedJson['restaurants'];
+      setState(() {
+        restaurants = listRestaurant.map((e) {
+          return Restaurant.fromJson(e);
+        }).toList();
+      });
+      if (kDebugMode) {
+        print(parsedJson['restaurants'].length);
+      }
+      setState(() {
+        isRestaurantListLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        loadingText = "Restaurant list failed to load";
+      });
     }
   }
 
@@ -68,12 +79,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: restaurants.map((e) {
-                    return RestaurantTile(restaurant: e);
-                  }).toList(),
-                ),
+                isRestaurantListLoading
+                    ? Text(loadingText)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: restaurants.map((e) {
+                          return RestaurantTile(restaurant: e);
+                        }).toList(),
+                      ),
               ],
             ),
           ),
