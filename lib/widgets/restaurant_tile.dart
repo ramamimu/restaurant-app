@@ -15,14 +15,14 @@ class RestaurantTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => RestaurantDetails(restaurant: restaurant),
+            builder: (context) => RestaurantDetails(restaurantId: restaurant.id),
           ),
         );
       },
       child: Card(
         child: ListTile(
           leading: Image.network(
-            restaurant.pictureId,
+            "https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}",
             loadingBuilder: (BuildContext context, Widget child,
                 ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) return child;
