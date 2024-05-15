@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-
-import '../model/restaurant.dart';
 import 'package:http/http.dart';
+
+import '../../model/restaurant.dart';
 
 class RestaurantAPI {
   static const String _baseUrl = "https://restaurant-api.dicoding.dev";
@@ -38,6 +36,18 @@ class RestaurantAPI {
       return restaurants;
     } else {
       throw Exception('Failed to search restaurant');
+    }
+  }
+
+  Future<Restaurant> restaurantDetail(String restaurantId) async {
+    final response = await get(Uri.parse(detailUrl(restaurantId)));
+    if (response.statusCode == 200) {
+      var decodedJson = json.decode(response.body);
+      dynamic restaurantJson = decodedJson['restaurant'];
+      Restaurant restaurant = Restaurant.fromJson(restaurantJson);
+      return restaurant;
+    } else {
+      throw Exception('failed to get detail restaurant');
     }
   }
 }

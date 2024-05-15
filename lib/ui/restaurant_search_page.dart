@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/api/restaurant_api.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/model/restaurant.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_search_provider.dart';
 
+import '../data/api/restaurant_api.dart';
+import '../data/enum/ResultState.dart';
 import '../widgets/restaurant_tile.dart';
 
 class SearchPage extends StatefulWidget {
@@ -21,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     // TODO: implement initState
-    getSearchedRestaurant();
+    // getSearchedRestaurant();
     super.initState();
   }
 
@@ -56,68 +58,77 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.grey, Colors.purple.shade300],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    return ChangeNotifierProvider<RestaurantSearchProvider>(
+      create: (_) => RestaurantSearchProvider(restaurantAPI: RestaurantAPI()),
+      builder: (context, child) {
+        return Scaffold(
+          appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.grey, Colors.purple.shade300],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+            ),
+            title: TextField(
+              onChanged: (_) {
+                Provider.of<RestaurantSearchProvider>(context, listen: false)
+                    .getSearchedRestaurant(_searchController.text.trim());
+                // getSearchedRestaurant();
+              },
+              controller: _searchController,
+              style: const TextStyle(color: Colors.white),
+              cursorColor: Colors.white,
+              decoration: const InputDecoration(
+                hintText: 'Search...',
+                hintStyle: TextStyle(color: Colors.white54),
+                border: InputBorder.none,
+              ),
             ),
           ),
-        ),
-        title: TextField(
-          onChanged: (_) {
-            getSearchedRestaurant();
-          },
-          controller: _searchController,
-          style: const TextStyle(color: Colors.white),
-          cursorColor: Colors.white,
-          decoration: const InputDecoration(
-            hintText: 'Search...',
-            hintStyle: TextStyle(color: Colors.white54),
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-          child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 30),
-              child: showRestaurantList())),
+          body: SingleChildScrollView(
+              child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: showRestaurantList(context))),
+        );
+      },
     );
   }
 
-  Widget showRestaurantList() {
-    if (status == ResultState.loading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    } else if (status == ResultState.hasData) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: restaurantSearchList.map((e) {
-          return RestaurantTile(restaurant: e);
-        }).toList(),
-      );
-    } else if (status == ResultState.noData) {
-      return const Center(
-        child: Material(
-          child: Center(child: Text('restaurant have no data')),
-        ),
-      );
-    } else if (status == ResultState.error) {
-      return const Center(
-        child: Material(
-          child: Text('error while getting the data'),
-        ),
-      );
-    } else {
-      return const Center(
-        child: Material(
-          child: Text(''),
-        ),
-      );
-    }
+  Widget showRestaurantList(BuildContext context) {
+    return Consumer<RestaurantSearchProvider>(builder: (context, state, _) {
+      if (state.status == ResultState.loading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (state.status == ResultState.hasData) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: state.restaurantSearchList.map((e) {
+            return RestaurantTile(restaurant: e);
+          }).toList(),
+        );
+      } else if (state.status == ResultState.noData) {
+        return const Center(
+          child: Material(
+            child: Center(child: Text('restaurant have no data')),
+          ),
+        );
+      } else if (state.status == ResultState.error) {
+        return const Center(
+          child: Material(
+            child: Text('error while getting the data'),
+          ),
+        );
+      } else {
+        return const Center(
+          child: Material(
+            child: Text(''),
+          ),
+        );
+      }
+    });
   }
 }

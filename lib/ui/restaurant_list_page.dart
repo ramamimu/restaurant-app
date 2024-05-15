@@ -3,12 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/api/restaurant_api.dart';
-import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/restaurant_search_page.dart';
 import 'package:restaurant_app/widgets/restaurant_list.dart';
-import 'package:restaurant_app/widgets/restaurant_tile.dart';
+
+import '../data/api/restaurant_api.dart';
 
 class RestaurantPage extends StatefulWidget {
   const RestaurantPage({super.key});

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/widgets/restaurant_tile.dart';
 
+import '../data/enum/ResultState.dart';
 import '../provider/restaurant_provider.dart';
 
 class RestaurantList extends StatelessWidget {
