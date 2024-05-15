@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/api/restaurant_api.dart';
 import 'package:restaurant_app/model/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/ui/restaurant_search_page.dart';
+import 'package:restaurant_app/widgets/restaurant_list.dart';
 import 'package:restaurant_app/widgets/restaurant_tile.dart';
 
 class RestaurantPage extends StatefulWidget {
@@ -16,10 +18,6 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  List<Restaurant> restaurants = [];
-  bool isRestaurantListLoading = true;
-  String loadingText = "loading...";
-
   @override
   void initState() {
     super.initState();
@@ -43,12 +41,26 @@ class _RestaurantPageState extends State<RestaurantPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 20),
-                    child: Text(
-                      "Restaurant",
-                      style: TextStyle(fontSize: 22),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 20),
+                        child: Text(
+                          "Restaurant",
+                          style: TextStyle(fontSize: 22),
+                        ),
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SearchPage()));
+                          },
+                          child: const Icon(Icons.search))
+                    ],
                   ),
                   const Text(
                     "Recommendation restaurant for you!",
@@ -57,7 +69,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  restaurantList(),
+                  const RestaurantList(),
                 ],
               ),
             ),
@@ -65,40 +77,5 @@ class _RestaurantPageState extends State<RestaurantPage> {
         ),
       ),
     );
-  }
-
-  Widget restaurantList() {
-    return Consumer<RestaurantProvider>(builder: (context, state, _) {
-      if (state.status == ResultState.loading) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else if (state.status == ResultState.hasData) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: state.restaurantList.map((e) {
-            return RestaurantTile(restaurant: e);
-          }).toList(),
-        );
-      } else if (state.status == ResultState.noData) {
-        return const Center(
-          child: Material(
-            child: Text('restaurant have no data'),
-          ),
-        );
-      } else if (state.status == ResultState.error) {
-        return const Center(
-          child: Material(
-            child: Text('error while getting the data'),
-          ),
-        );
-      } else {
-        return const Center(
-          child: Material(
-            child: Text(''),
-          ),
-        );
-      }
-    });
   }
 }

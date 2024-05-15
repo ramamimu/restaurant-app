@@ -27,4 +27,17 @@ class RestaurantAPI {
       throw Exception('Failed to load restaurant list');
     }
   }
+
+  Future<List<Restaurant>> restaurantSearch(String query) async {
+    final response = await get(Uri.parse(searchUrl(query)));
+    if (response.statusCode == 200) {
+      var decodedJson = json.decode(response.body);
+      List<dynamic> restaurantsJson = decodedJson['restaurants'];
+      List<Restaurant> restaurants =
+          restaurantsJson.map((json) => Restaurant.fromJson(json)).toList();
+      return restaurants;
+    } else {
+      throw Exception('Failed to search restaurant');
+    }
+  }
 }

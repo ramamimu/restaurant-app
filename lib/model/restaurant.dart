@@ -24,7 +24,7 @@ class Restaurant {
         pictureId: json["pictureId"],
         city: json["city"],
         rating: json["rating"].toDouble() as double,
-        menus: json.containsKey('menus')? Menus.fromJson(json["menus"]): null,
+        menus: json.containsKey('menus') ? Menus.fromJson(json["menus"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
